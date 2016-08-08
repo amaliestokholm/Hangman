@@ -1,15 +1,38 @@
-# This is my attempt to write Conway's Game of Life using numpy
+"""
+This is my attempt to write Conway's Game of Life using numpy.
+
+# Conway's Game of Life Challenge
+
+https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
+
+# Rules
+
+> Any live cell with fewer than two live neighbours dies,
+  as if caused by under-population.
+> Any live cell with two or three live neighbours lives on to the next
+  generation.
+> Any live cell with more than three live neighbours dies,
+  as if by overcrowding.
+> Any dead cell with exactly three live neighbours becomes a live cell,
+  as if by reproduction.
+"""
+
 import numpy as np
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 
 
-def life():
-    size = 30
-    X = np.random.randint(0, 2, (size, size))
-    
-    # Glider
+def life(size, interval, frames):
     """
+    Input:
+     - size: the size for the grid. Must be (n, m)
+     - interval: the pause in ms between each frame in the animation
+     - frames: the number of frames in the animation
+    """
+    X = np.random.randint(0, 2, size)
+
+    """
+    # Glider-test (see https://en.wikipedia.org/wiki/Glider_(Conway%27s_Life))
     X = np.zeros([Y, Y])
     X[0,1] = 1
     X[1,2] = 1
@@ -18,28 +41,27 @@ def life():
     X[2,2] = 1
     """
     assert X.ndim == 2
-
-    interval = 200
-    frames = 40
     animate(X, interval, frames)
 
 
 def life_step(X):
     # Count the number of neightbours
-    dim = len(X)
+    size = X.shape
+    xdim = size[0]
+    ydim = size[1]
     N = np.zeros(X.shape)
 
     # I could optimize a lot by avoiding these loops
-    for i in np.arange(dim):
-        for j in np.arange(dim ):
-            u = (i, (j-1) % dim)
-            d = (i, (j+1) % dim)
-            l = ((i-1) % dim, j)
-            r = ((i+1) % dim, j)
-            ul = ((i-1) % dim, (j-1) % dim)
-            ur = ((i+1) % dim, (j-1) % dim)
-            dl = ((i-1) % dim, (j+1) % dim)
-            dr = ((i+1) % dim, (j+1) % dim)
+    for i in np.arange(xdim):
+        for j in np.arange(ydim):
+            u = (i, (j-1) % ydim)
+            d = (i, (j+1) % ydim)
+            l = ((i-1) % xdim, j)
+            r = ((i+1) % xdim, j)
+            ul = ((i-1) % xdim, (j-1) % ydim)
+            ur = ((i+1) % xdim, (j-1) % ydim)
+            dl = ((i-1) % xdim, (j+1) % ydim)
+            dr = ((i+1) % xdim, (j+1) % ydim)
             N[i, j] = (X[u] + X[d] + X[l] + X[r] +
                        X[ul] + X[ur] + X[dl] + X[dr])
 
@@ -73,4 +95,4 @@ def animate(X, interval, frames):
     plt.show()
 
 
-life()
+life((10, 20), 200, 30)
