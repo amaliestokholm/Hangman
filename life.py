@@ -51,7 +51,10 @@ def life_step(X):
     ydim = size[1]
     N = np.zeros(X.shape)
 
-    # I could optimize a lot by avoiding these loops
+    """
+    I could optimize a lot by avoiding these loops - but this is just 
+    a naive implementation. I'm using toroidal boundary conditions.
+    """
     for i in np.arange(xdim):
         for j in np.arange(ydim):
             u = (i, (j-1) % ydim)
@@ -95,4 +98,4 @@ def animate(X, interval, frames):
     plt.show()
 
 
-life((10, 20), 200, 30)
+life((30, 40), 50, 40)
